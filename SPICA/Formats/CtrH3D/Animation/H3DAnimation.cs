@@ -14,6 +14,7 @@ namespace SPICA.Formats.CtrH3D.Animation
             set => _Name = value ?? throw Exceptions.GetNullException("Name");
         }
 
+        public uint Hash;
         public H3DAnimationFlags AnimationFlags;
         public H3DAnimationType  AnimationType;
 

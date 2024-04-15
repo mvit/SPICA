@@ -41,6 +41,7 @@
             this.TxtOutFolder = new System.Windows.Forms.TextBox();
             this.BtnConvert = new System.Windows.Forms.Button();
             this.ProgressConv = new System.Windows.Forms.ProgressBar();
+            this.ChkExportSkeletons = new System.Windows.Forms.CheckBox();
             this.GrpInput.SuspendLayout();
             this.GrpOutput.SuspendLayout();
             this.SuspendLayout();
@@ -75,6 +76,7 @@
             // 
             // GrpOutput
             // 
+            this.GrpOutput.Controls.Add(this.ChkExportSkeletons);
             this.GrpOutput.Controls.Add(this.ChkPrefixNames);
             this.GrpOutput.Controls.Add(this.ChkExportModels);
             this.GrpOutput.Controls.Add(this.ChkExportAnimations);
@@ -84,7 +86,7 @@
             this.GrpOutput.Controls.Add(this.TxtOutFolder);
             this.GrpOutput.Location = new System.Drawing.Point(12, 69);
             this.GrpOutput.Name = "GrpOutput";
-            this.GrpOutput.Size = new System.Drawing.Size(360, 140);
+            this.GrpOutput.Size = new System.Drawing.Size(360, 171);
             this.GrpOutput.TabIndex = 0;
             this.GrpOutput.TabStop = false;
             this.GrpOutput.Text = "Output folder";
@@ -92,7 +94,7 @@
             // ChkPrefixNames
             // 
             this.ChkPrefixNames.AutoSize = true;
-            this.ChkPrefixNames.Location = new System.Drawing.Point(6, 117);
+            this.ChkPrefixNames.Location = new System.Drawing.Point(6, 140);
             this.ChkPrefixNames.Name = "ChkPrefixNames";
             this.ChkPrefixNames.Size = new System.Drawing.Size(167, 17);
             this.ChkPrefixNames.TabIndex = 7;
@@ -135,7 +137,8 @@
             this.CmbFormat.FormattingEnabled = true;
             this.CmbFormat.Items.AddRange(new object[] {
             "COLLADA 1.4.1 (*.dae)",
-            "Valve StudioMdl (*.smd)"});
+            "Valve StudioMdl (*.smd)",
+            "TRANM (*.tranm)"});
             this.CmbFormat.Location = new System.Drawing.Point(162, 49);
             this.CmbFormat.Name = "CmbFormat";
             this.CmbFormat.Size = new System.Drawing.Size(192, 21);
@@ -174,6 +177,16 @@
             this.ProgressConv.Name = "ProgressConv";
             this.ProgressConv.Size = new System.Drawing.Size(258, 24);
             this.ProgressConv.TabIndex = 0;
+            // 
+            // ChkExportSkeletons
+            // 
+            this.ChkExportSkeletons.AutoSize = true;
+            this.ChkExportSkeletons.Location = new System.Drawing.Point(6, 117);
+            this.ChkExportSkeletons.Name = "ChkExportSkeletons";
+            this.ChkExportSkeletons.Size = new System.Drawing.Size(111, 17);
+            this.ChkExportSkeletons.TabIndex = 9;
+            this.ChkExportSkeletons.Text = "Export skeletons";
+            this.ChkExportSkeletons.UseVisualStyleBackColor = true;
             // 
             // FrmExport
             // 
@@ -214,5 +227,6 @@
         private System.Windows.Forms.TextBox TxtOutFolder;
         private System.Windows.Forms.Button BtnConvert;
         private System.Windows.Forms.ProgressBar ProgressConv;
+        private System.Windows.Forms.CheckBox ChkExportSkeletons;
     }
 }

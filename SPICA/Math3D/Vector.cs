@@ -84,5 +84,26 @@ namespace SPICA.Math3D
                 -(float)Math.Asin(2 * (q.X * q.Z - q.W * q.Y)),
                 (float)Math.Atan2(2 * (q.X * q.Y + q.Z * q.W), 1 - 2 * (q.Y * q.Y + q.Z * q.Z)));
         }
+
+        public static Quaternion ToQuaternion(this Vector3 v)
+        {
+
+            float cy = (float)Math.Cos(v.Z * 0.5);
+            float sy = (float)Math.Sin(v.Z * 0.5);
+            float cp = (float)Math.Cos(v.Y * 0.5);
+            float sp = (float)Math.Sin(v.Y * 0.5);
+            float cr = (float)Math.Cos(v.X * 0.5);
+            float sr = (float)Math.Sin(v.X * 0.5);
+
+            return new Quaternion
+            {
+                W = (cr * cp * cy + sr * sp * sy),
+                X = (sr * cp * cy - cr * sp * sy),
+                Y = (cr * sp * cy + sr * cp * sy),
+                Z = (cr * cp * sy - sr * sp * cy)
+            };
+
+        }
+
     }
 }

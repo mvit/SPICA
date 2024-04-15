@@ -141,6 +141,8 @@ namespace SPICA.WinForms.Formats
                                     }
 
                                     break;
+                                default:
+                                    return null;
                             }
                         }
                     }
@@ -221,7 +223,7 @@ namespace SPICA.WinForms.Formats
         }
 
         private static H3D LoadGflxPak(BinaryReader br) {
-            H3D h3d = new GFLXPack(br).ToH3D();
+            H3D h3d = new GFLXPackOld(br).ToH3D();
             return h3d;
         }
     }

@@ -9,9 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SPICA</RootNamespace>
     <AssemblyName>SPICA</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +35,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
@@ -40,11 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimHelper.cs" />
     <Compile Include="Compression\LZ4.cs" />
+    <Compile Include="Flatbuffers\Common\DataTypes.cs" />
+    <Compile Include="Flatbuffers\FlatbufferConverter.cs" />
+    <Compile Include="Flatbuffers\GFB\GFBMDL.cs" />
+    <Compile Include="Flatbuffers\TR\TRMTR.cs" />
+    <Compile Include="Flatbuffers\TR\TRSKL.cs" />
+    <Compile Include="Flatbuffers\TR\TRMBF.cs" />
+    <Compile Include="Flatbuffers\TR\TRMSH.cs" />
+    <Compile Include="Flatbuffers\TR\TRANM.cs" />
     <Compile Include="Formats\Common\BitUtils.cs" />
     <Compile Include="Formats\Common\CRC32Hash.cs" />
     <Compile Include="Formats\Common\Exceptions.cs" />
     <Compile Include="Formats\Common\FNV1a.cs" />
+    <Compile Include="Formats\Common\GFFNV.cs" />
+    <Compile Include="Formats\Common\GFQuaternionQuantization.cs" />
     <Compile Include="Formats\Common\INamed.cs" />
     <Compile Include="Formats\Common\INameIndexed.cs" />
     <Compile Include="Formats\Common\InvalidMagicException.cs" />
@@ -57,6 +71,7 @@
     <Compile Include="Formats\Common\MeshTransform.cs" />
     <Compile Include="Formats\Common\PatriciaTree.cs" />
     <Compile Include="Formats\Common\StringUtils.cs" />
+    <Compile Include="Formats\Common\StructConverter.cs" />
     <Compile Include="Formats\Common\TextureTransform.cs" />
     <Compile Include="Formats\Common\TextureTransformType.cs" />
     <Compile Include="Formats\CtrGfx\Animation\GfxAnimation.cs" />
@@ -346,8 +361,12 @@
     <Compile Include="Formats\GFL2\Shader\GFShader.cs" />
     <Compile Include="Formats\GFL2\Texture\GFTexture.cs" />
     <Compile Include="Formats\GFL2\Texture\GFTextureFormat.cs" />
-    <Compile Include="Formats\GFLX\GFbmdl.cs" />
-    <Compile Include="Formats\GFLX\GFLXPack.cs" />
+    <Compile Include="Formats\GFLX\GF\GFLXModel.cs" />
+    <Compile Include="Formats\GFLX\Container\GFLXPackConverter.cs" />
+    <Compile Include="Formats\GFLX\TR\TRLXANM.cs" />
+    <Compile Include="Formats\GFLX\Container\GFLXPack.cs" />
+    <Compile Include="Formats\GFLX\TR\TRLXMSH.cs" />
+    <Compile Include="Formats\GFLX\TR\TRLXSKL.cs" />
     <Compile Include="Formats\GFL\GF1MotionPack.cs" />
     <Compile Include="Formats\GFL\Motion\GF1MotBone.cs" />
     <Compile Include="Formats\GFL\Motion\GF1MotBoneTransform.cs" />
@@ -477,6 +496,28 @@
     <Compile Include="Serialization\Serializer\RefValue.cs" />
     <Compile Include="Serialization\Serializer\Section.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="FlatSharp">
+      <Version>6.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="Humanizer.Core">
+      <Version>2.14.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.IO.Pipelines">
+      <Version>6.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.5.5</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.Metadata">
+      <Version>6.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

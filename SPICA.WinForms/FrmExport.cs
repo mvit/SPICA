@@ -2,12 +2,16 @@
 using SPICA.Formats.CtrH3D.Texture;
 using SPICA.Formats.Generic.COLLADA;
 using SPICA.Formats.Generic.StudioMdl;
+using SPICA.Formats.GFLX;
+using SPICA.Formats.GFLX.TR;
 using SPICA.WinForms.Formats;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace SPICA.WinForms
 {
@@ -63,75 +67,99 @@ namespace SPICA.WinForms
                 return;
             }
 
-            string[] Files = Directory.GetFiles(TxtInputFolder.Text);
-
+            string[] Files = Directory.GetFiles(TxtInputFolder.Text) ;
+            
             bool ExportModels = ChkExportModels.Checked;
+            bool ExportSkeletons = ChkExportSkeletons.Checked;
             bool ExportAnims = ChkExportAnimations.Checked;
             bool ExportTexs = ChkExportTextures.Checked;
             bool PrefixNames = ChkPrefixNames.Checked;
 
             int Format = CmbFormat.SelectedIndex;
 
-            int FileIndex = 0;
+            int FileLen = Files.Length;
 
-            //TODO: Use Parallel loop for more speed and keep UI responsive
-            foreach (string File in Files)
-            {
-                H3D Data = FormatIdentifier.IdentifyAndOpen(File);
+            BtnConvert.Enabled = false;
+            
+            for (int i = 1; i < FileLen; i += 9) {
+                
+                string BaseName = TxtOutFolder.Text + Path.DirectorySeparatorChar;
+                var filename = Path.Combine(TxtInputFolder.Text, $"dec_{i.ToString("00000")}.bin");
 
-                if (Data != null)
+                H3D Data = FormatIdentifier.IdentifyAndOpen(filename);
+                
+                if (Data == null) continue;
+
+                BaseName += Data.Models[0].Name + Path.DirectorySeparatorChar;
+
+                Directory.CreateDirectory(BaseName);
+
+                for (int j = 0; j < 8; j++)
                 {
-                    string BaseName = PrefixNames ? Path.GetFileNameWithoutExtension(File) + "_" : string.Empty;
+                    var fileidx = i + j;
+                    filename = Path.Combine(TxtInputFolder.Text, $"dec_{fileidx.ToString("00000")}.bin");
+                    H3D extra = FormatIdentifier.IdentifyAndOpen(filename, Data.Models[0].Skeleton);
+                    if ( extra == null ) continue;
+                    Data.Merge(extra);
+                }
 
-                    BaseName = Path.Combine(TxtOutFolder.Text, BaseName);
-
-                    if (!PrefixNames) BaseName += Path.DirectorySeparatorChar;
-
-                    if (ExportModels)
+                if (ExportModels)
+                {
+                    for (int Index = 0; Index < Data.Models.Count; Index++)
                     {
-                        for (int Index = 0; Index < Data.Models.Count; Index++)
+                        string FileName = BaseName + Data.Models[Index].Name;
+
+                        switch (Format)
                         {
-                            string FileName = BaseName + Data.Models[Index].Name;
-
-                            switch (Format)
-                            {
-                                case 0: new DAE(Data, Index).Save(FileName + ".dae"); break;
-                                case 1: new SMD(Data, Index).Save(FileName + ".smd"); break;
-                            }
-                        }
-                    }
-
-                    if (ExportAnims && Data.Models.Count > 0)
-                    {
-                        for (int Index = 0; Index < Data.SkeletalAnimations.Count; Index++)
-                        {
-                            string FileName = BaseName + Data.Models[0].Name + "_" + Data.SkeletalAnimations[Index].Name;
-
-                            switch (Format)
-                            {
-                                case 0: new DAE(Data, 0, Index).Save(FileName + ".dae"); break;
-                                case 1: new SMD(Data, 0, Index).Save(FileName + ".smd"); break;
-                            }
-                        }
-                    }
-
-                    if (ExportTexs)
-                    {
-                        foreach (H3DTexture Tex in Data.Textures)
-                        {
-                            Tex.ToBitmap().Save(Path.Combine(TxtOutFolder.Text, Tex.Name + ".png"));
+                            case 0: new DAE(Data, Index).Save(FileName + ".dae"); break;
+                            case 1:
+                            case 2:
+                                new SMD(Data, Index).Save(FileName + ".smd"); break;
                         }
                     }
                 }
 
-                float Progress = ++FileIndex;
+                if (ExportAnims)
+                {
+                    for (int Index = 0; Index < Data.SkeletalAnimations.Count; Index++)
+                    {
+                        string FileName = BaseName + Data.SkeletalAnimations[Index].Name;
 
-                Progress = (Progress / Files.Length) * 100;
+                        switch (Format)
+                        {
+                            case 0: new DAE(Data, 0, Index).Save(FileName + ".dae"); break;
+                            case 1: new SMD(Data, 0, Index).Save(FileName + ".smd"); break;
+                            case 2: 
+                                new TRLXANM(Data, 0, Index).Save(FileName + ".tranm");
+                                new TRLXANM(Data, 0, Index).Save(FileName + ".gfbanm");
+                                break;
+                        }
+                    }
+                }
 
-                ProgressConv.Value = (int)Progress;
+                if (ExportSkeletons)
+                {
+                    for (int Index = 0; Index < Data.Models.Count; Index++)
+                    {
+                        string FileName = BaseName + Data.Models[Index].Name;
+                        new TRLXSKL(Data, Index).Save(FileName + ".trskl"); break;
+                    }
+                }
+
+                if (ExportTexs)
+                {
+                    foreach (H3DTexture Tex in Data.Textures)
+                    {
+                        Tex.ToBitmap().Save(BaseName + Tex.Name + ".png");
+                    }
+                }
+
+                ProgressConv.Value = (i/FileLen) * 100;
 
                 Application.DoEvents();
             }
+
+            BtnConvert.Enabled = true;
         }
     }
 }

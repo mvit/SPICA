@@ -36,6 +36,7 @@ namespace SPICA.Formats.CtrH3D.Model
         public Vector3   Rotation;
         public Vector3   Translation;
         public Matrix3x4 InverseTransform;
+        public byte USUMFlags;
 
         private string _Name;
 

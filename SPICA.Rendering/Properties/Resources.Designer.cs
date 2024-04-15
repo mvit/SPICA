@@ -19,7 +19,7 @@ namespace SPICA.Rendering.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -80,7 +80,7 @@ namespace SPICA.Rendering.Properties {
         ///uniform vec4 HslGCol;
         ///uniform vec4 HslSCol;
         ///uniform vec4 HslSDir;
-        ///unif [rest of string was truncated]&quot;;.
+        ///uniform vec4 UnivReg[60 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DefaultVertexShader {
             get {
@@ -120,7 +120,9 @@ namespace SPICA.Rendering.Properties {
         ///
         ///uniform int LightsCount;
         ///
-        ///unifor [rest of string was truncated]&quot;;.
+        ///uniform Light_t Lights[3];
+        ///
+        ///uniform v [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FragmentShaderBase {
             get {

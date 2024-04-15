@@ -1,6 +1,6 @@
 ﻿using SPICA.Formats.Common;
 using SPICA.Math3D;
-
+using System;
 using System.IO;
 using System.Numerics;
 
@@ -15,6 +15,11 @@ namespace SPICA.Formats.GFL2.Model
         public Vector3 Scale;
         public Vector3 Rotation;
         public Vector3 Translation;
+
+        public static void ParseFlags()
+        {
+
+        }
 
         public GFBone(BinaryReader Reader)
         {

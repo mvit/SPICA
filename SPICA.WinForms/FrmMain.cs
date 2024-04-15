@@ -60,6 +60,8 @@ namespace SPICA.WinForms
             Viewport.MouseMove  += Viewport_MouseMove;
             Viewport.MouseWheel += Viewport_MouseWheel;
             Viewport.Resize     += Viewport_Resize;
+            
+            AnimHelper.Open("SPICACache.bin");
 
             InitializeComponent();
 
@@ -137,7 +139,7 @@ namespace SPICA.WinForms
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                e.Effect = ModifierKeys.HasFlag(Keys.Alt) ? DragDropEffects.Copy : DragDropEffects.Move;
+                e.Effect = DragDropEffects.Copy;
             }
         }
         
@@ -206,14 +208,16 @@ namespace SPICA.WinForms
             {
                 if ((e.Button & MouseButtons.Left) != 0)
                 {
-                    float X = (float)(((e.X - InitialMov.X) / Width)  * Math.PI * 2);
+                    float X = (float)(((e.X - InitialMov.X) / Width)  * Math.PI);
                     float Y = (float)(((e.Y - InitialMov.Y) / Height) * Math.PI);
 
+                    Transform.Row3.Xyz -= Translation;
+
                     Transform *=
-                        Matrix4.CreateTranslation(-Vector3.UnitZ * Translation.Z) *
-                        Matrix4.CreateFromAxisAngle(Transform.Row1.Xyz, X) *
                         Matrix4.CreateRotationX(Y) *
-                        Matrix4.CreateTranslation(Vector3.UnitZ * Translation.Z);
+                        Matrix4.CreateRotationY(X);
+
+                    Transform.Row3.Xyz += Translation;
                 }
 
                 if ((e.Button & MouseButtons.Right) != 0)
@@ -268,12 +272,8 @@ namespace SPICA.WinForms
 
         private void Viewport_Resize(object sender, EventArgs e)
         {
-            if (Renderer != null)
-            {   
-                Renderer.Resize(Viewport.Width, Viewport.Height);
-                Renderer.Camera.ViewMatrix = Transform;   
-            }
-            
+            Renderer?.Resize(Viewport.Width, Viewport.Height);
+
             UpdateViewport();
         }
         #endregion
@@ -393,11 +393,11 @@ namespace SPICA.WinForms
 
         private void ToolButtonExport_Click(object sender, EventArgs e)
         {
-            FileIO.Export(Scene, TexturesList.SelectedIndex);
+            FileIO.Export(Scene, ModelsList.SelectedIndex);
         }
 
         private void ExtractGfpak(string pak, string outPath) {
-            GFLXPack gfpak = new GFLXPack(pak);
+            GFLXPackOld gfpak = new GFLXPackOld(pak);
             for (int i = 0; i < gfpak.FileCnt; i++) {
                 using (BinaryWriter bw = new BinaryWriter(new FileStream(outPath + "/" + gfpak.GetName(i), FileMode.CreateNew))) {
                     byte[] file = gfpak.GetFile(i);
@@ -447,13 +447,11 @@ namespace SPICA.WinForms
             MdlCenter = Vector3.Zero;
 
             Dimension = 100;
-            
-            Translation = new Vector3(0, 0, -200);
 
             Transform =
                 Matrix4.CreateRotationY((float)Math.PI * 0.25f) *
                 Matrix4.CreateRotationX((float)Math.PI * 0.25f) *
-                Matrix4.CreateTranslation(Translation);
+                Matrix4.CreateTranslation(0, 0, -200);
         }
 
         private void UpdateTransforms()
@@ -781,10 +779,5 @@ namespace SPICA.WinForms
             AnimGrp.Continue();
         }
         #endregion
-
-        private void ToolButtonImport_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

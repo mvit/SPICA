@@ -3,7 +3,7 @@ using SPICA.Formats.CtrH3D.Animation;
 using SPICA.Formats.CtrH3D.Model;
 using SPICA.Formats.GFL2.Model;
 using SPICA.Math3D;
-
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
@@ -28,8 +28,8 @@ namespace SPICA.Formats.GFL2.Motion
             public uint Address;
         }
 
+        public uint AnimHash;
         public uint FramesCount;
-
         public bool IsLooping;
         public bool IsBlended;
 
@@ -77,8 +77,7 @@ namespace SPICA.Formats.GFL2.Motion
             AnimRegionMin = Reader.ReadVector3();
             AnimRegionMax = Reader.ReadVector3();
 
-            uint AnimHash = Reader.ReadUInt32();
-
+            AnimHash = Reader.ReadUInt32();
             //Content
             for (int Anim = 1; Anim < AnimSections.Length; Anim++)
             {

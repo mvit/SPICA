@@ -4,6 +4,7 @@ using SPICA.Formats.CtrH3D.Model;
 using SPICA.Formats.Generic.COLLADA;
 using SPICA.Formats.Generic.StudioMdl;
 using SPICA.Formats.GFL2.Model;
+using SPICA.Formats.GFLX;
 using SPICA.Rendering;
 
 using System.IO;
@@ -24,11 +25,8 @@ namespace SPICA.WinForms.Formats
 
             int OpenFiles = 0;
 
-            using (FrmLoading Form = new FrmLoading(FileNames.Length))
             foreach (string FileName in FileNames)
             {
-                Form.Proceed(FileName);
-                
                 H3DDict<H3DBone> Skeleton = null;
 
                 if (Scene.Models.Count > 0) Skeleton = Scene.Models[0].Skeleton;
@@ -72,7 +70,7 @@ namespace SPICA.WinForms.Formats
 
             using (SaveFileDialog SaveDlg = new SaveFileDialog())
             {
-                SaveDlg.Filter = 
+                SaveDlg.Filter =
                     "COLLADA 1.4.1|*.dae|" +
                     "Valve StudioMdl|*.smd|" +
                     "Binary Ctr H3D|*.bch";
@@ -81,7 +79,7 @@ namespace SPICA.WinForms.Formats
 
                 if (SaveDlg.ShowDialog() == DialogResult.OK)
                 {
-                    int MdlIndex  = State.ModelIndex;
+                    int MdlIndex = State.ModelIndex;
                     int AnimIndex = State.SklAnimIndex;
 
                     switch (SaveDlg.FilterIndex)
@@ -94,46 +92,31 @@ namespace SPICA.WinForms.Formats
             }
         }
 
-        public static void Export(H3D Scene, int Index = -1)
+        public static void Export(H3D Scene, int ModelIndex)
         {
-            if (Index != -1)
+            //Export all(or don't export if format can only export a single item)
+            using (FolderBrowserDialog FolderDlg = new FolderBrowserDialog())
             {
-                //Export one
-                using (SaveFileDialog SaveDlg = new SaveFileDialog())
+                if (FolderDlg.ShowDialog() == DialogResult.OK)
                 {
-                    SaveDlg.Filter = "Portable Network Graphics|*.png|"	+
-									 "GFTexture|*.*;*.pc;*.bin";
-                    SaveDlg.FileName = Scene.Textures[Index].Name;
+                    string ModelPath = Path.Combine(FolderDlg.SelectedPath, $"{Scene.Models[ModelIndex].Name}.dae");
+                    new DAE(Scene, ModelIndex, -1).Save(ModelPath);
 
-					if (SaveDlg.ShowDialog() == DialogResult.OK)
+                    for (int i = 0; i < Scene.Textures.Count; i++)
                     {
-						switch (SaveDlg.FilterIndex) {
-							case 1:	//PNG
-								TextureManager.GetTexture(Index).Save(SaveDlg.FileName);
-								break;
-							case 2:	//GFTexture
-								new GFPackedTexture(Scene, Index).Save(SaveDlg.FileName);
-								break;
-						}
+                        string TexturePath = Path.Combine(FolderDlg.SelectedPath, $"{Scene.Textures[i].Name}.png");
+
+                        TextureManager.GetTexture(i).Save(TexturePath);
+                    }
+                    for (int i = 0; i < Scene.SkeletalAnimations.Count; i++)
+                    {
+                        string AnimName = AnimHelper.GetNameFromHash(Scene.SkeletalAnimations[i].Hash);
+                        string FileName = Path.Combine(FolderDlg.SelectedPath, $"{AnimName}.tranm");
+                        new TRLXANM(Scene, ModelIndex, i).Save(FileName);
                     }
                 }
             }
-            else
-            {
-                //Export all (or don't export if format can only export a single item)
-                using (FolderBrowserDialog FolderDlg = new FolderBrowserDialog())
-                {
-                    if (FolderDlg.ShowDialog() == DialogResult.OK)
-                    {
-                        for (int i = 0; i < Scene.Textures.Count; i++)
-                        {
-                            string FileName = Path.Combine(FolderDlg.SelectedPath, $"{Scene.Textures[i].Name}.png");
 
-                            TextureManager.GetTexture(i).Save(FileName);
-                        }
-                    }
-                }
-            }
         }
     }
 }

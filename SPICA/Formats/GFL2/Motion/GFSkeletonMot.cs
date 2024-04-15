@@ -38,7 +38,8 @@ namespace SPICA.Formats.GFL2.Motion
         {
             H3DAnimation Output = new H3DAnimation()
             {
-                Name           = "GFMotion",
+                Name           = AnimHelper.GetNameFromHash(Motion.AnimHash),
+                Hash = Motion.AnimHash,
                 FramesCount    = Motion.FramesCount,
                 AnimationType  = H3DAnimationType.Skeletal,
                 AnimationFlags = Motion.IsLooping ? H3DAnimationFlags.IsLooping : 0
