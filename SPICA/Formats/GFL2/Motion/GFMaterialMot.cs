@@ -46,7 +46,8 @@ namespace SPICA.Formats.GFL2.Motion
         {
             H3DMaterialAnim Output = new H3DMaterialAnim()
             {
-                Name           = "GFMotion",
+                //Name           = "GFMotion",
+                Name           = AnimHelper.GetNameFromHash(Motion.AnimHash) + "_mat",
                 FramesCount    = Motion.FramesCount,
                 AnimationType  = H3DAnimationType.Material,
                 AnimationFlags = Motion.IsLooping ? H3DAnimationFlags.IsLooping : 0

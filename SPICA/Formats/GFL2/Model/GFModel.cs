@@ -45,8 +45,6 @@ namespace SPICA.Formats.GFL2.Model
 
         public GFModel(BinaryReader Reader, string ModelName) : this()
         {
-            //Name = ModelName;
-
             uint MagicNumber   = Reader.ReadUInt32();
             uint SectionsCount = Reader.ReadUInt32();
 
@@ -78,7 +76,9 @@ namespace SPICA.Formats.GFL2.Model
             {
                 Skeleton.Add(new GFBone(Reader));
             }
+            
             Name = Skeleton[0].Name + ModelName;
+            
             GFSection.SkipPadding(Reader.BaseStream);
 
             int LUTsCount = Reader.ReadInt32();

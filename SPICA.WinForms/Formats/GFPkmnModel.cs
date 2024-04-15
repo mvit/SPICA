@@ -32,17 +32,17 @@ namespace SPICA.WinForms.Formats
             switch (MagicNum)
             {
                 case GFModelConstant:
-                    GFModelPack MdlPack = new GFModelPack();
+                    GFModelPack gfModelPack = new GFModelPack();
 
                     //High Poly Pokémon model
                     Input.Seek(Header.Entries[0].Address, SeekOrigin.Begin);
 
-                    MdlPack.Models.Add(new GFModel(Reader, "PM_HighPoly"));
+                    gfModelPack.Models.Add(new GFModel(Reader, ""));
 
                     //Low Poly Pokémon model
                     Input.Seek(Header.Entries[1].Address, SeekOrigin.Begin);
                     
-                    MdlPack.Models.Add(new GFModel(Reader, "PM_LowPoly"));
+                    gfModelPack.Models.Add(new GFModel(Reader, "_sdw"));
 
                     //Pokémon Shader package
                     Input.Seek(Header.Entries[2].Address, SeekOrigin.Begin);
@@ -53,7 +53,7 @@ namespace SPICA.WinForms.Formats
                     {
                         Input.Seek(Entry.Address, SeekOrigin.Begin);
 
-                        MdlPack.Shaders.Add(new GFShader(Reader));
+                        gfModelPack.Shaders.Add(new GFShader(Reader));
                     }
 
                     //More shaders
@@ -67,11 +67,11 @@ namespace SPICA.WinForms.Formats
                         {
                             Input.Seek(Entry.Address, SeekOrigin.Begin);
 
-                            MdlPack.Shaders.Add(new GFShader(Reader));
+                            gfModelPack.Shaders.Add(new GFShader(Reader));
                         }
                     }
 
-                    Output = MdlPack.ToH3D();
+                    Output = gfModelPack.ToH3D();
 
                     break;
 
@@ -94,6 +94,7 @@ namespace SPICA.WinForms.Formats
 
                     for (int Index = 0; Index < Header.Entries.Length; Index++)
                     {
+                        if (Index != 0 && Header.Entries[Index - 1].Address == Header.Entries[Index].Address) continue;
                         Input.Seek(Header.Entries[Index].Address, SeekOrigin.Begin);
 
                         if (Input.Position + 4 > Input.Length) break;
@@ -109,22 +110,16 @@ namespace SPICA.WinForms.Formats
 
                         if (SklAnim != null)
                         {
-                            SklAnim.Name = $"Motion_{Mot.Index}";
-
                             Output.SkeletalAnimations.Add(SklAnim);
                         }
 
                         if (MatAnim != null)
                         {
-                            MatAnim.Name = $"Motion_{Mot.Index}";
-
                             Output.MaterialAnimations.Add(MatAnim);
                         }
 
                         if (VisAnim != null)
                         {
-                            VisAnim.Name = $"Motion_{Mot.Index}";
-
                             Output.VisibilityAnimations.Add(VisAnim);
                         }
                     }
