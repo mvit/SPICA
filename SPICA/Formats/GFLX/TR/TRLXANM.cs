@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using FlatSharp;
-using SPICA.Math3D;
 
 namespace SPICA.Formats.GFLX
 {
@@ -61,7 +60,6 @@ namespace SPICA.Formats.GFLX
 
             foreach (H3DAnimationElement element in Animation.Elements)
             {
-                if (element.PrimitiveType != H3DPrimitiveType.QuatTransform) continue;
                 TRLXANMNode node = Channels.Find(x => x.name == element.Name);
                 if (element.Content is H3DAnimQuatTransform quatTransform)
                 {
@@ -90,6 +88,37 @@ namespace SPICA.Formats.GFLX
                                 node.rotation.times.Add((ushort)frame);
                                 node.rotation.values.Add(quatTransform.GetRotationValue(frame));
                             }
+                        }
+                    }
+                }
+                else if (element.Content is H3DAnimTransform transform)
+                {
+                    for (int frame = 0; frame < Animation.FramesCount; frame++)
+                    {
+                        if (transform.TranslationExists)
+                        {
+                            node.translation.times.Add((ushort)frame);
+                            node.translation.values.Add(new Vector3(
+                                transform.TranslationX.GetFrameValue(frame),
+                                transform.TranslationY.GetFrameValue(frame),
+                                transform.TranslationZ.GetFrameValue(frame)));
+                        }
+                        if (transform.ScaleExists)
+                        {
+                            node.scale.times.Add((ushort)frame);
+                            node.scale.values.Add(new Vector3(
+                                transform.ScaleX.GetFrameValue(frame),
+                                transform.ScaleY.GetFrameValue(frame),
+                                transform.ScaleZ.GetFrameValue(frame)));
+                        }
+                        if (transform.RotationExists)
+                        {
+                            node.rotation.times.Add((ushort)frame);
+                            node.rotation.values.Add(Quaternion.CreateFromRotationMatrix(
+                                Matrix4x4.CreateRotationX(transform.RotationX.GetFrameValue(frame)) * 
+                                Matrix4x4.CreateRotationY(transform.RotationY.GetFrameValue(frame)) * 
+                                Matrix4x4.CreateRotationZ(transform.RotationZ.GetFrameValue(frame))
+                            ));
                         }
                     }
                 }
@@ -128,7 +157,6 @@ namespace SPICA.Formats.GFLX
                 TRANMSkeletalTrack track = new TRANMSkeletalTrack()
                 {
                     BoneName = node.name,
-
                 };
                 //SCALE
                 if (node.scale.values.Count == 0)

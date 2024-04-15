@@ -36,12 +36,10 @@ namespace SPICA.WinForms.Formats
 
                     //High Poly Pokémon model
                     Input.Seek(Header.Entries[0].Address, SeekOrigin.Begin);
-
                     gfModelPack.Models.Add(new GFModel(Reader, ""));
 
                     //Low Poly Pokémon model
                     Input.Seek(Header.Entries[1].Address, SeekOrigin.Begin);
-                    
                     gfModelPack.Models.Add(new GFModel(Reader, "_sdw"));
 
                     //Pokémon Shader package
@@ -52,7 +50,6 @@ namespace SPICA.WinForms.Formats
                     foreach (GFPackage.Entry Entry in PSHeader.Entries)
                     {
                         Input.Seek(Entry.Address, SeekOrigin.Begin);
-
                         gfModelPack.Shaders.Add(new GFShader(Reader));
                     }
 
@@ -66,7 +63,6 @@ namespace SPICA.WinForms.Formats
                         foreach (GFPackage.Entry Entry in PCHeader.Entries)
                         {
                             Input.Seek(Entry.Address, SeekOrigin.Begin);
-
                             gfModelPack.Shaders.Add(new GFShader(Reader));
                         }
                     }
@@ -81,7 +77,6 @@ namespace SPICA.WinForms.Formats
                     foreach (GFPackage.Entry Entry in Header.Entries)
                     {
                         Input.Seek(Entry.Address, SeekOrigin.Begin);
-
                         Output.Textures.Add(new GFTexture(Reader).ToH3DTexture());
                     }
 

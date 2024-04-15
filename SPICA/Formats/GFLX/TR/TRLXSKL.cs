@@ -57,8 +57,6 @@ namespace SPICA.Formats.GFLX.TR
                 }
             }
         }
-        
-
 
         public void Save(string fileName)
         {
