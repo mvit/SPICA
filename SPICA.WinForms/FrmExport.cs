@@ -90,7 +90,7 @@ namespace SPICA.WinForms
                 
                 if (Data == null) continue;
 
-                BaseName += Data.Models[0].Name + Path.DirectorySeparatorChar;
+                BaseName += $"{i:d8}_{Data.Models[0].Name}{Path.DirectorySeparatorChar}";
 
                 Directory.CreateDirectory(BaseName);
 
@@ -98,9 +98,9 @@ namespace SPICA.WinForms
                 {
                     var fileidx = i + j;
                     filename = Path.Combine(TxtInputFolder.Text, $"dec_{fileidx.ToString("00000")}.bin");
-                    H3D extra = FormatIdentifier.IdentifyAndOpen(filename, Data.Models[0].Skeleton);
-                    if ( extra == null ) continue;
-                    Data.Merge(extra);
+                    H3D Extra = FormatIdentifier.IdentifyAndOpen(filename, Data.Models[0].Skeleton);
+                    if ( Extra == null ) continue;
+                    Data.Merge(Extra);
                 }
 
                 if (ExportModels)
